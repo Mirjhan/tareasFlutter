@@ -10,14 +10,14 @@ class IncidenciasPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<IncidenciasController>(
         init: controller,
-        builder: (controller) => Scaffold(
-              appBar: appBar('Lista de incidencias'),
-              body: SafeArea(
-                  child: ListView.builder(
-                padding: EdgeInsets.all(16),
-                itemCount: 20,
-                itemBuilder: (context, index) => cards(),
-              )),
+        builder: (controller) => SafeArea(
+              child: Scaffold(
+                appBar: appBar('Lista de incidencias'),
+                body: RefreshIndicator(
+                  onRefresh: controller.getIncidencias,
+                  child: listViewBuilder(),
+                ),
+              ),
             ));
   }
 
@@ -28,7 +28,21 @@ class IncidenciasPage extends StatelessWidget {
     );
   }
 
-  Widget cards() {
+  Widget listViewBuilder() {
+    final incidencias = controller.incidencias;
+    return ListView.builder(
+      padding: EdgeInsets.all(16),
+      itemCount: incidencias.length,
+      itemBuilder: (context, index) => _itemCard(
+          nombre: incidencias[index].nombre,
+          descripcion: incidencias[index].descripcion),
+    );
+  }
+
+  Widget _itemCard({
+    required String nombre,
+    required String descripcion,
+  }) {
     return Card(
       elevation: 5,
       shadowColor: Colors.amber,
@@ -39,7 +53,7 @@ class IncidenciasPage extends StatelessWidget {
         padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [Text('Titulo....'), Text('Descripcion....')],
+          children: [Text(nombre), Text(descripcion)],
         ),
       ),
     );

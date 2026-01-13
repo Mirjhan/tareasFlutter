@@ -1,3 +1,27 @@
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:tarea_flutter/src/model/incidencia_model.dart';
 
-class IncidenciasController extends GetxController {}
+class IncidenciasController extends GetxController {
+  List<IncidenciaModel> incidencias = [];
+
+  @override
+  void onReady() async {
+    getIncidencias();
+    super.onReady();
+  }
+
+  Future<void> getIncidencias() async {
+    try {
+      final response =
+          await http.get(Uri.parse('http://10.0.2.2:3000/incidencia'));
+      if (response.statusCode == 200) {
+        incidencias = incidenciaModelFromJson(response.body);
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'No se puedo conectar al servidor');
+    } finally {
+      update();
+    }
+  }
+}
