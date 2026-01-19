@@ -35,13 +35,15 @@ class IncidenciasPage extends StatelessWidget {
       itemCount: incidencias.length,
       itemBuilder: (context, index) => _itemCard(
           nombre: incidencias[index].nombre,
-          descripcion: incidencias[index].descripcion),
+          descripcion: incidencias[index].descripcion,
+          index: index),
     );
   }
 
   Widget _itemCard({
     required String nombre,
     required String descripcion,
+    required int index,
   }) {
     return Card(
       elevation: 5,
@@ -51,9 +53,20 @@ class IncidenciasPage extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 10),
       child: Padding(
         padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [Text(nombre), Text(descripcion)],
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(nombre),
+                Text(descripcion),
+              ],
+            ),
+            IconButton(
+                onPressed: () => controller.deleteIncidencia(index),
+                icon: Icon(Icons.delete_forever_rounded))
+          ],
         ),
       ),
     );
