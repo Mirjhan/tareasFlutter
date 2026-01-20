@@ -24,4 +24,22 @@ class IncidenciasController extends GetxController {
       update();
     }
   }
+
+  Future<void> deleteIncidencia(int index) async {
+    final int id = incidencias[index].id;
+    try {
+      final response =
+          await http.delete(Uri.parse('http://10.0.2.2:3000/incidencia/$id'));
+      if (response.statusCode == 200) {
+        incidencias.removeAt(index);
+        Get.snackbar('Exito', 'Se elimino la incidencia correctamente');
+      } else {
+        Get.snackbar('Error', 'No se pudo eliminar la incidencia');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Ocurrio un error : $e');
+    } finally {
+      update();
+    }
+  }
 }
