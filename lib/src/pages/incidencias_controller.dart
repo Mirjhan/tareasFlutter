@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:tarea_flutter/src/model/incidencia_model.dart';
+import 'package:tarea_flutter/src/pages/agregar_incidencias_page.dart';
 
 class IncidenciasController extends GetxController {
   List<IncidenciaModel> incidencias = [];
@@ -9,6 +10,10 @@ class IncidenciasController extends GetxController {
   void onReady() async {
     getIncidencias();
     super.onReady();
+  }
+
+  void goToAgregarIncidencia() {
+    Get.to(() => AgregarIncidenciasPage());
   }
 
   Future<void> getIncidencias() async {
