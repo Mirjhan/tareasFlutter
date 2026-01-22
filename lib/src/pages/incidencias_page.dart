@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tarea_flutter/src/pages/agregar_incidencias_page.dart';
 import 'package:tarea_flutter/src/pages/incidencias_controller.dart';
+import 'package:tarea_flutter/src/widgets/appBar.dart';
 
 class IncidenciasPage extends StatelessWidget {
   final IncidenciasController controller = IncidenciasController();
@@ -12,20 +14,19 @@ class IncidenciasPage extends StatelessWidget {
         init: controller,
         builder: (controller) => SafeArea(
               child: Scaffold(
-                appBar: appBar('Lista de incidencias'),
+                appBar: appBarWidget(titulo: 'Lista de incidencias'),
                 body: RefreshIndicator(
                   onRefresh: controller.getIncidencias,
                   child: listViewBuilder(),
                 ),
+                floatingActionButton: FloatingActionButton(
+                  onPressed: () {
+                    controller.goToAgregarIncidencia();
+                  },
+                  child: Icon(Icons.add),
+                ),
               ),
             ));
-  }
-
-  AppBar appBar(String titulo) {
-    return AppBar(
-      title: Text(titulo),
-      centerTitle: true,
-    );
   }
 
   Widget listViewBuilder() {
