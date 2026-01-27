@@ -41,14 +41,17 @@ class AgregarIncidenciasPage extends StatelessWidget {
   }
 
   Widget boton() {
-    return Container(
-      margin: EdgeInsets.all(5),
-      padding: EdgeInsets.all(15),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30), color: Colors.amber),
-      child: Text(
-        'Guardar',
-        textAlign: TextAlign.center,
+    return GestureDetector(
+      onTap: controller.guardar,
+      child: Container(
+        margin: EdgeInsets.all(5),
+        padding: EdgeInsets.all(15),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30), color: Colors.amber),
+        child: Text(
+          'Guardar',
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }

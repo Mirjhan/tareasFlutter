@@ -8,12 +8,17 @@ class IncidenciasController extends GetxController {
 
   @override
   void onReady() async {
-    getIncidencias();
     super.onReady();
+    getIncidencias();
   }
 
-  void goToAgregarIncidencia() {
-    Get.to(() => AgregarIncidenciasPage());
+  void goToAgregarIncidencia() async {
+    final result =
+        await Get.to<IncidenciaModel>(() => AgregarIncidenciasPage());
+    if (result != null) {
+      incidencias.add(result);
+      update();
+    }
   }
 
   Future<void> getIncidencias() async {
@@ -31,7 +36,7 @@ class IncidenciasController extends GetxController {
   }
 
   Future<void> deleteIncidencia(int index) async {
-    final int id = incidencias[index].id;
+    final int id = incidencias[index].id!;
     try {
       final response =
           await http.delete(Uri.parse('http://10.0.2.2:3000/incidencia/$id'));
