@@ -5,13 +5,13 @@
 import 'dart:convert';
 
 class IncidenciaModel {
-  int id;
+  int? id;
   String nombre;
   String descripcion;
   String estado;
 
   IncidenciaModel({
-    required this.id,
+    this.id,
     required this.nombre,
     required this.descripcion,
     required this.estado,
