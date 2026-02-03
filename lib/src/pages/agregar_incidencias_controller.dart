@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:tarea_flutter/src/model/incidencia_model.dart';
 
 class AgregarIncidenciasController extends GetxController {
@@ -29,15 +32,23 @@ class AgregarIncidenciasController extends GetxController {
     update();
   }
 
-  void guardar() {
+  Future<void> guardar() async {
     String? mensaje = validar();
     if (mensaje != null) {
       Get.snackbar(mensaje, 'Error');
     } else {
-      final nuevaIncidencia = IncidenciaModel(
+      final incidencia = IncidenciaModel(
           nombre: nombre, descripcion: descripcion, estado: estado!);
+      final response = await http.post(
+          Uri.parse('http://10.0.2.2:3000/incidencia/create'),
+          body: incidencia.toCreateJson());
 
-      Get.back(result: nuevaIncidencia);
+      if (response.statusCode == 200) {
+        final nuevaIncidencia =
+            IncidenciaModel.fromJson(jsonDecode(response.body));
+        Get.snackbar('Exito', 'Agregado existosamente');
+        Get.back(result: nuevaIncidencia);
+      }
     }
   }
 }

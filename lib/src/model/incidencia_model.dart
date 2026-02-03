@@ -31,6 +31,12 @@ class IncidenciaModel {
         "descripcion": descripcion,
         "estado": estado,
       };
+
+  Map<String, dynamic> toCreateJson() => {
+        "nombre": nombre,
+        "descripcion": descripcion,
+        "estado": estado,
+      };
 }
 
 List<IncidenciaModel> incidenciaModelFromJson(String str) =>
