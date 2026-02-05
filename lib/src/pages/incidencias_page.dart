@@ -34,9 +34,10 @@ class IncidenciasPage extends StatelessWidget {
       padding: EdgeInsets.all(16),
       itemCount: incidencias.length,
       itemBuilder: (context, index) => _itemCard(
-          nombre: incidencias[index].nombre,
-          descripcion: incidencias[index].descripcion,
-          index: index),
+        nombre: incidencias[index].nombre,
+        descripcion: incidencias[index].descripcion,
+        index: index,
+      ),
     );
   }
 
@@ -45,28 +46,31 @@ class IncidenciasPage extends StatelessWidget {
     required String descripcion,
     required int index,
   }) {
-    return Card(
-      elevation: 5,
-      shadowColor: Colors.amber,
-      color: Colors.lightBlue,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      margin: EdgeInsets.only(bottom: 10),
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(nombre),
-                Text(descripcion),
-              ],
-            ),
-            IconButton(
-                onPressed: () => controller.deleteIncidencia(index),
-                icon: Icon(Icons.delete_forever_rounded))
-          ],
+    return GestureDetector(
+      onTap: () => controller.goToEditarIncidencia(index),
+      child: Card(
+        elevation: 5,
+        shadowColor: Colors.amber,
+        color: Colors.lightBlue,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        margin: EdgeInsets.only(bottom: 10),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(nombre),
+                  Text(descripcion),
+                ],
+              ),
+              IconButton(
+                  onPressed: () => controller.deleteIncidencia(index),
+                  icon: Icon(Icons.delete_forever_rounded))
+            ],
+          ),
         ),
       ),
     );
