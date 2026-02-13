@@ -14,7 +14,9 @@ class AgregarIncidenciasPage extends StatelessWidget {
         init: controller,
         builder: (controller) => Scaffold(
               appBar: AppBar(
-                title: Text('Nueva incidencia'),
+                title: Text(controller.estaEditando
+                    ? 'Editar incidencia'
+                    : 'Nueva incidencia'),
                 centerTitle: true,
               ),
               body: SingleChildScrollView(
@@ -26,11 +28,13 @@ class AgregarIncidenciasPage extends StatelessWidget {
                         hintext: 'Nombre',
                         onChanged: controller.onChangedNombre,
                         icon: Icon(Icons.abc),
+                        initialValue: controller.nombre,
                       ),
                       cajaDeTexto(
                           hintext: 'Descripcion',
                           onChanged: controller.onChangedDescripcion,
-                          icon: Icon(Icons.abc)),
+                          icon: Icon(Icons.abc),
+                          initialValue: controller.descripcion),
                       dropdownMenu(size.width),
                     ],
                   ),
@@ -42,7 +46,7 @@ class AgregarIncidenciasPage extends StatelessWidget {
 
   Widget boton() {
     return GestureDetector(
-      onTap: controller.guardar,
+      onTap: controller.estaEditando ? controller.editar : controller.guardar,
       child: Container(
         margin: EdgeInsets.all(5),
         padding: EdgeInsets.all(15),
@@ -59,11 +63,13 @@ class AgregarIncidenciasPage extends StatelessWidget {
   Widget cajaDeTexto({
     required String hintext,
     required void Function(String)? onChanged,
+    String? initialValue,
     Icon? icon,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: TextFormField(
+        initialValue: initialValue,
         decoration: InputDecoration(
           hintText: hintext,
           prefixIcon: icon,
@@ -75,6 +81,7 @@ class AgregarIncidenciasPage extends StatelessWidget {
 
   Widget dropdownMenu(double width) {
     return DropdownMenu<String>(
+      initialSelection: controller.estado,
       dropdownMenuEntries: [
         DropdownMenuEntry(value: 'E', label: 'En espera'),
         DropdownMenuEntry(value: 'P', label: 'En proceso'),

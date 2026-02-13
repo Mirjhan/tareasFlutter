@@ -21,6 +21,15 @@ class IncidenciasController extends GetxController {
     }
   }
 
+  void goToEditarIncidencia(int index) async {
+    final result = await Get.to<IncidenciaModel>(() => AgregarIncidenciasPage(),
+        arguments: {'seleccionada': incidencias[index]});
+    if (result != null) {
+      incidencias[index] = result;
+      update();
+    }
+  }
+
   Future<void> getIncidencias() async {
     try {
       final response =
