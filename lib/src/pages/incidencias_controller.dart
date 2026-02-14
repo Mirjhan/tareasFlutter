@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:tarea_flutter/src/model/incidencia_model.dart';
@@ -44,11 +45,34 @@ class IncidenciasController extends GetxController {
     }
   }
 
+  void confirmarDelete(int index) async {
+    bool response = await Get.dialog(
+      AlertDialog(
+        title: Text('Confirmar eliminación'),
+        content: Text(
+            '¿Estas seguro de eliminar la incidencia ${incidencias[index].id} ?'),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: true),
+            child: Text('Si'),
+          ),
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: Text('No'),
+          )
+        ],
+      ),
+    );
+    if (response == true) {
+      deleteIncidencia(index);
+    }
+  }
+
   Future<void> deleteIncidencia(int index) async {
     final int id = incidencias[index].id!;
     try {
-      final response =
-          await http.delete(Uri.parse('http://10.0.2.2:3000/incidencia/$id'));
+      final response = await http
+          .delete(Uri.parse('http://10.0.2.2:3000/incidencia/delete/$id'));
       if (response.statusCode == 200) {
         incidencias.removeAt(index);
         Get.snackbar('Exito', 'Se elimino la incidencia correctamente');

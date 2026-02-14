@@ -67,7 +67,7 @@ class IncidenciasPage extends StatelessWidget {
                 ],
               ),
               IconButton(
-                  onPressed: () => controller.deleteIncidencia(index),
+                  onPressed: () => controller.confirmarDelete(index),
                   icon: Icon(Icons.delete_forever_rounded))
             ],
           ),
