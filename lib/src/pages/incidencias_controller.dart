@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:tarea_flutter/src/model/incidencia_model.dart';
 import 'package:tarea_flutter/src/pages/agregar_incidencias_page.dart';
+import 'package:tarea_flutter/src/widgets/loading_service.dart';
 
 class IncidenciasController extends GetxController {
   List<IncidenciaModel> incidencias = [];
@@ -32,6 +33,7 @@ class IncidenciasController extends GetxController {
   }
 
   Future<void> getIncidencias() async {
+    showLoading();
     try {
       final response =
           await http.get(Uri.parse('http://10.0.2.2:3000/incidencia'));
@@ -41,6 +43,7 @@ class IncidenciasController extends GetxController {
     } catch (e) {
       Get.snackbar('Error', 'No se puedo conectar al servidor');
     } finally {
+      hideLoading();
       update();
     }
   }
@@ -70,6 +73,7 @@ class IncidenciasController extends GetxController {
 
   Future<void> deleteIncidencia(int index) async {
     final int id = incidencias[index].id!;
+    showLoading();
     try {
       final response = await http
           .delete(Uri.parse('http://10.0.2.2:3000/incidencia/delete/$id'));
@@ -82,6 +86,7 @@ class IncidenciasController extends GetxController {
     } catch (e) {
       Get.snackbar('Error', 'Ocurrio un error : $e');
     } finally {
+      hideLoading();
       update();
     }
   }
