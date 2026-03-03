@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:tarea_flutter/src/model/incidencia_model.dart';
+import 'package:tarea_flutter/src/widgets/loading_service.dart';
 
 class AgregarIncidenciasController extends GetxController {
   IncidenciaModel? incidenciaSeleccionada;
@@ -56,17 +57,19 @@ class AgregarIncidenciasController extends GetxController {
     if (mensaje != null) {
       Get.snackbar(mensaje, 'Error');
     } else {
+      showLoading();
       final incidencia = IncidenciaModel(
           nombre: nombre, descripcion: descripcion, estado: estado!);
       final response = await http.post(
           Uri.parse('http://10.0.2.2:3000/incidencia/create'),
           body: incidencia.toCreateJson());
+      hideLoading();
 
       if (response.statusCode == 200) {
         final nuevaIncidencia =
             IncidenciaModel.fromJson(jsonDecode(response.body));
-        Get.snackbar('Exito', 'Agregado existosamente');
         Get.back(result: nuevaIncidencia);
+        Get.snackbar('Exito', 'Agregado existosamente');
       }
     }
   }
@@ -76,6 +79,7 @@ class AgregarIncidenciasController extends GetxController {
     if (mensaje != null) {
       Get.snackbar(mensaje, 'Error');
     } else {
+      showLoading();
       final incidencia = IncidenciaModel(
           id: incidenciaSeleccionada?.id,
           nombre: nombre,
@@ -88,6 +92,7 @@ class AgregarIncidenciasController extends GetxController {
         },
         body: jsonEncode(incidencia.toJson()),
       );
+      hideLoading();
       if (response.statusCode == 200) {
         final incidenciaActualizada =
             IncidenciaModel.fromJson(jsonDecode(response.body));
