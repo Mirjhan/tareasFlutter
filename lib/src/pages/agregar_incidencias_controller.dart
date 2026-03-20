@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:tarea_flutter/src/model/incidencia_model.dart';
+import 'package:tarea_flutter/src/services/app_http_manager.dart';
 import 'package:tarea_flutter/src/widgets/loading_service.dart';
 
 class AgregarIncidenciasController extends GetxController {
@@ -56,20 +55,25 @@ class AgregarIncidenciasController extends GetxController {
     String? mensaje = validar();
     if (mensaje != null) {
       Get.snackbar(mensaje, 'Error');
+      return;
     } else {
+      AppHttpManager appHttpManager = AppHttpManager();
       showLoading();
       final incidencia = IncidenciaModel(
-          nombre: nombre, descripcion: descripcion, estado: estado!);
-      final response = await http.post(
-          Uri.parse('http://10.0.2.2:3000/incidencia/create'),
-          body: incidencia.toCreateJson());
+        nombre: nombre,
+        descripcion: descripcion,
+        estado: estado!,
+      );
+      final response = await appHttpManager.post(
+          path: '/incidencia/create', body: incidencia.toCreateJson());
       hideLoading();
-
-      if (response.statusCode == 200) {
+      if (response.isSucces) {
         final nuevaIncidencia =
             IncidenciaModel.fromJson(jsonDecode(response.body));
         Get.back(result: nuevaIncidencia);
         Get.snackbar('Exito', 'Agregado existosamente');
+      } else {
+        Get.snackbar('Error', 'Ocurrio un error');
       }
     }
   }
@@ -78,25 +82,28 @@ class AgregarIncidenciasController extends GetxController {
     String? mensaje = validar();
     if (mensaje != null) {
       Get.snackbar(mensaje, 'Error');
+      return;
     } else {
+      AppHttpManager appHttpManager = AppHttpManager();
       showLoading();
       final incidencia = IncidenciaModel(
-          id: incidenciaSeleccionada?.id,
-          nombre: nombre,
-          descripcion: descripcion,
-          estado: estado!);
-      final response = await http.put(
-        Uri.parse('http://10.0.2.2:3000/incidencia/update'),
-        headers: {
-          HttpHeaders.contentTypeHeader: 'application/json',
-        },
-        body: jsonEncode(incidencia.toJson()),
+        id: incidenciaSeleccionada?.id,
+        nombre: nombre,
+        descripcion: descripcion,
+        estado: estado!,
+      );
+      final response = await appHttpManager.put(
+        path: '/incidencia/update',
+        headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+        body: incidencia.toJson(),
       );
       hideLoading();
-      if (response.statusCode == 200) {
+      if (response.isSucces) {
         final incidenciaActualizada =
             IncidenciaModel.fromJson(jsonDecode(response.body));
         Get.back(result: incidenciaActualizada);
+      } else {
+        Get.snackbar('Error', 'Ocurrio un error');
       }
     }
   }

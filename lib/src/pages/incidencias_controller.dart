@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:tarea_flutter/src/model/incidencia_model.dart';
 import 'package:tarea_flutter/src/pages/agregar_incidencias_page.dart';
+import 'package:tarea_flutter/src/services/app_http_manager.dart';
+import 'package:tarea_flutter/src/services/app_response.dart';
 import 'package:tarea_flutter/src/widgets/loading_service.dart';
 
 class IncidenciasController extends GetxController {
@@ -33,18 +34,15 @@ class IncidenciasController extends GetxController {
   }
 
   Future<void> getIncidencias() async {
+    AppHttpManager appHttpManager = AppHttpManager();
     showLoading();
-    try {
-      final response =
-          await http.get(Uri.parse('http://10.0.2.2:3000/incidencia'));
-      if (response.statusCode == 200) {
-        incidencias = incidenciaModelFromJson(response.body);
-      }
-    } catch (e) {
-      Get.snackbar('Error', 'No se puedo conectar al servidor');
-    } finally {
-      hideLoading();
+    AppResponse response = await appHttpManager.get(path: '/incidencia/');
+    hideLoading();
+    if (response.isSucces) {
+      incidencias = incidenciaModelFromJson(response.body);
       update();
+    } else {
+      Get.snackbar('Error', 'Ocurrio un error');
     }
   }
 
@@ -73,21 +71,17 @@ class IncidenciasController extends GetxController {
 
   Future<void> deleteIncidencia(int index) async {
     final int id = incidencias[index].id!;
+    AppHttpManager appHttpManager = AppHttpManager();
     showLoading();
-    try {
-      final response = await http
-          .delete(Uri.parse('http://10.0.2.2:3000/incidencia/delete/$id'));
-      if (response.statusCode == 200) {
-        incidencias.removeAt(index);
-        Get.snackbar('Exito', 'Se elimino la incidencia correctamente');
-      } else {
-        Get.snackbar('Error', 'No se pudo eliminar la incidencia');
-      }
-    } catch (e) {
-      Get.snackbar('Error', 'Ocurrio un error : $e');
-    } finally {
-      hideLoading();
+    AppResponse response =
+        await appHttpManager.delete(path: '/incidencia/delete/$id');
+    hideLoading();
+    if (response.isSucces) {
+      incidencias.removeAt(index);
       update();
+      Get.snackbar('Exito', 'Se elimino la incidencia correctamente');
+    } else {
+      Get.snackbar('Error', 'Ocurrio un error');
     }
   }
 }
