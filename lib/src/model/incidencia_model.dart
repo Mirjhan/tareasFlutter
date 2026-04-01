@@ -9,12 +9,14 @@ class IncidenciaModel {
   String nombre;
   String descripcion;
   String estado;
+  String? imagen;
 
   IncidenciaModel({
     this.id,
     required this.nombre,
     required this.descripcion,
     required this.estado,
+    this.imagen,
   });
 
   factory IncidenciaModel.fromJson(Map<String, dynamic> json) =>
@@ -23,6 +25,7 @@ class IncidenciaModel {
         nombre: json["nombre"],
         descripcion: json["descripcion"],
         estado: json["estado"],
+        imagen: json["imagen"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -30,12 +33,14 @@ class IncidenciaModel {
         "nombre": nombre,
         "descripcion": descripcion,
         "estado": estado,
+        "imagen": imagen,
       };
 
   Map<String, dynamic> toCreateJson() => {
         "nombre": nombre,
         "descripcion": descripcion,
         "estado": estado,
+        "imagen": imagen,
       };
 }
 
