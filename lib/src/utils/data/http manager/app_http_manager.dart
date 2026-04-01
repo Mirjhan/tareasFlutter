@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:tarea_flutter/src/services/app_response.dart';
-import 'package:tarea_flutter/src/services/config.dart';
+import 'package:tarea_flutter/src/utils/data/http%20manager/app_response.dart';
+import 'package:tarea_flutter/src/incidencia/core/config.dart';
 
 class AppHttpManager {
   Future<AppResponse> get({
@@ -102,7 +102,7 @@ class AppHttpManager {
       headers: response.headers,
       body: response.body,
     );
-    if (appResponse.isSucces) {
+    if (appResponse.isSuccess) {
       log('Exitoso');
     } else {
       log('Error: ${appResponse.statusCode}');
