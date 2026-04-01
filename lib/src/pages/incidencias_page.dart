@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tarea_flutter/src/pages/incidencias_controller.dart';
-import 'package:tarea_flutter/src/widgets/appBar.dart';
+import 'package:tarea_flutter/src/widgets/appbar.dart';
 
 class IncidenciasPage extends StatelessWidget {
   final IncidenciasController controller = IncidenciasController();
@@ -13,7 +13,7 @@ class IncidenciasPage extends StatelessWidget {
         init: controller,
         builder: (controller) => SafeArea(
               child: Scaffold(
-                appBar: appBarWidget(titulo: 'Lista de incidencias'),
+                appBar: appbarWidget(titulo: 'Lista de incidencias'),
                 body: RefreshIndicator(
                   onRefresh: controller.getIncidencias,
                   child: listViewBuilder(),
@@ -45,6 +45,7 @@ class IncidenciasPage extends StatelessWidget {
     required String nombre,
     required String descripcion,
     required int index,
+    String? imagen,
   }) {
     return GestureDetector(
       onTap: () => controller.goToEditarIncidencia(index),
@@ -59,12 +60,21 @@ class IncidenciasPage extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(nombre),
-                  Text(descripcion),
-                ],
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.amber,
+                  image: DecorationImage(image: AssetImage("notFound.jpg")),
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(nombre),
+                    Text(descripcion),
+                  ],
+                ),
               ),
               IconButton(
                   onPressed: () => controller.confirmarDelete(index),
