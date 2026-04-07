@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tarea_flutter/src/widgets/loading_overlay.dart';
+import 'package:tarea_flutter/src/utils/ui/services/loading/loading_overlay.dart';
 
 class LoadingService extends GetxService {
   bool isShowing = false;

@@ -9,5 +9,5 @@ class AppResponse {
     required this.body,
   });
 
-  bool get isSucces => (statusCode >= 200 && statusCode <= 299);
+  bool get isSuccess => (statusCode >= 200 && statusCode <= 299);
 }
