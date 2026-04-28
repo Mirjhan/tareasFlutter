@@ -5,4 +5,8 @@ abstract class IncidenciaRepository {
   Future<IncidenciaEntity> crearIncidencias(IncidenciaEntity incidencia);
   Future<IncidenciaEntity> editarIncidencia(IncidenciaEntity incidencia);
   Future<IncidenciaEntity> eliminarIncidencia(int id);
+  Future<IncidenciaEntity> crearIncidenciaConImagen(
+      IncidenciaEntity incidencia, String pathFile);
+  Future<IncidenciaEntity> editarIncidenciaConImagen(
+      IncidenciaEntity incidencia, String pathFile);
 }
