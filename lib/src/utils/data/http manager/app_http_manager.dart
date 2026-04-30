@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:tarea_flutter/src/utils/data/http%20manager/app_response.dart';
 import 'package:tarea_flutter/src/incidencia/core/config.dart';
+import 'package:tarea_flutter/src/utils/data/http%20manager/method_enum.dart';
 
 class AppHttpManager {
   Future<AppResponse> get({
@@ -61,7 +63,34 @@ class AppHttpManager {
       Uri.parse(_uriBuilder(path: path, query: query)),
       headers: _headersBuilder(headers),
     );
+
     return returnResponse(response);
+  }
+
+  Future<AppResponse> sendFile({
+    required MethodEnum method,
+    required String path,
+    required String fieldNameOfFile,
+    required String pathFile,
+    Map<String, String>? fields,
+  }) async {
+    log('Request: SEND FILE');
+    http.MultipartRequest request =
+        http.MultipartRequest(method.name, Uri.parse('$urlServer$path'));
+    fields?.forEach((key, value) => request.fields[key] = value);
+
+    http.MultipartFile file = await http.MultipartFile.fromPath(
+      fieldNameOfFile,
+      pathFile,
+      contentType: MediaType('image', 'jpg'),
+    );
+    request.files.add(file);
+
+    http.StreamedResponse response = await request.send();
+    String body = await response.stream.bytesToString();
+
+    return AppResponse(
+        statusCode: response.statusCode, headers: response.headers, body: body);
   }
 
   String _uriBuilder({
@@ -78,6 +107,7 @@ class AppHttpManager {
       });
     }
     log('URL: $url');
+
     return url;
   }
 
@@ -93,7 +123,6 @@ class AppHttpManager {
     }
 
     return allHeaders;
-    // {'accept': '12345', 'çontent-type': 'application/json', ... 'token': '12345'}
   }
 
   AppResponse returnResponse(http.Response response) {

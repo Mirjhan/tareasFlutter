@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tarea_flutter/src/incidencia/core/config.dart';
 import 'package:tarea_flutter/src/incidencia/ui/pages/incidencias/incidencias_controller.dart';
 import 'package:tarea_flutter/src/utils/ui/widgets/appbar.dart';
 
@@ -22,14 +23,13 @@ class IncidenciasPage extends StatelessWidget {
                       controller: controller,
                       nombre: controller.incidencias[index].nombre,
                       descripcion: controller.incidencias[index].descripcion,
+                      imagen: controller.incidencias[index].imagen,
                       index: index,
                     ),
                   ),
                 ),
                 floatingActionButton: FloatingActionButton(
-                  onPressed: () {
-                    controller.goToAgregarIncidencia();
-                  },
+                  onPressed: controller.goToAgregarIncidencia,
                   child: Icon(Icons.add),
                 ),
               ),
@@ -57,28 +57,45 @@ class IncidenciasPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
+                width: 50,
+                height: 50,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.amber,
-                  //image: DecorationImage(image: AssetImage("notFound.jpg")),
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                    image: _pickImage(imagen),
+                    fit: BoxFit.cover,
+                  ),
                 ),
+              ),
+              SizedBox(
+                width: 10,
               ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(nombre),
-                    Text(descripcion),
+                    Text(
+                      descripcion,
+                      maxLines: 2,
+                    ),
                   ],
                 ),
               ),
               IconButton(
-                  onPressed: () => controller.confirmarDelete(index),
+                  onPressed: () => controller
+                      .confirmarDelete(controller.incidencias[index].id!),
                   icon: Icon(Icons.delete_forever_rounded))
             ],
           ),
         ),
       ),
     );
+  }
+
+  ImageProvider _pickImage(String? imagen) {
+    return (imagen != null)
+        ? NetworkImage('$urlServerPublic/incidencia/$imagen')
+        : AssetImage('assets/images/not_found.png');
   }
 }

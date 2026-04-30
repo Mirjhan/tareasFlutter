@@ -5,12 +5,14 @@ class IncidenciaEntity {
   String nombre;
   String descripcion;
   String estado;
+  String? imagen;
 
   IncidenciaEntity({
     this.id,
     required this.nombre,
     required this.descripcion,
     required this.estado,
+    this.imagen,
   });
 
   factory IncidenciaEntity.fromJson(Map<String, dynamic> json) =>
@@ -19,10 +21,24 @@ class IncidenciaEntity {
         nombre: json["nombre"],
         descripcion: json["descripcion"],
         estado: json["estado"],
+        imagen: json["imagen"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "nombre": nombre,
+        "descripcion": descripcion,
+        "estado": estado,
+      };
+
+  Map<String, String> toJsonFormDataCreateImage() => {
+        "nombre": nombre,
+        "descripcion": descripcion,
+        "estado": estado,
+      };
+
+  Map<String, String> toJsonFormDataIpdateImage() => {
+        "id": id!.toString(),
         "nombre": nombre,
         "descripcion": descripcion,
         "estado": estado,
