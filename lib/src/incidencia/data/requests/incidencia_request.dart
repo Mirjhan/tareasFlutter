@@ -1,15 +1,11 @@
-import 'dart:convert';
-
-import 'package:tarea_flutter/src/incidencia/data/requests/incidencia_request.dart';
-
-class IncidenciaEntity {
+class IncidenciaRequest {
   int? id;
   String nombre;
   String descripcion;
   String estado;
   String? imagen;
 
-  IncidenciaEntity({
+  IncidenciaRequest({
     this.id,
     required this.nombre,
     required this.descripcion,
@@ -17,8 +13,8 @@ class IncidenciaEntity {
     this.imagen,
   });
 
-  factory IncidenciaEntity.fromJson(Map<String, dynamic> json) =>
-      IncidenciaEntity(
+  factory IncidenciaRequest.fromJson(Map<String, dynamic> json) =>
+      IncidenciaRequest(
         id: json["id"],
         nombre: json["nombre"],
         descripcion: json["descripcion"],
@@ -45,17 +41,4 @@ class IncidenciaEntity {
         "descripcion": descripcion,
         "estado": estado,
       };
-
-  IncidenciaRequest toData() => IncidenciaRequest(
-        nombre: nombre,
-        descripcion: descripcion,
-        estado: estado,
-      );
 }
-
-List<IncidenciaEntity> incidenciaEntityFromJson(String str) =>
-    List<IncidenciaEntity>.from(
-        json.decode(str).map((x) => IncidenciaEntity.fromJson(x)));
-
-String incidenciaEntityToJson(List<IncidenciaEntity> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));

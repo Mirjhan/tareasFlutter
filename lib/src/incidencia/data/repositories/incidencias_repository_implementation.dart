@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:tarea_flutter/src/incidencia/data/requests/incidencia_request.dart';
+import 'package:tarea_flutter/src/incidencia/data/responses/incidencia_response.dart';
 import 'package:tarea_flutter/src/incidencia/domain/entities/incidencia_entity.dart';
 import 'package:tarea_flutter/src/incidencia/domain/repositories/incidencia_repository.dart';
 import 'package:tarea_flutter/src/utils/data/http%20manager/app_http_manager.dart';
@@ -10,12 +12,15 @@ class IncidenciasRepositoryImplementation implements IncidenciaRepository {
   @override
   Future<IncidenciaEntity> crearIncidencias(IncidenciaEntity incidencia) async {
     AppHttpManager appHttpManager = AppHttpManager();
+    IncidenciaRequest request = incidencia.toData();
     AppResponse response = await appHttpManager.post(
       path: '/incidencia/create',
-      body: incidencia.toJson(),
+      body: request.toJson(),
     );
     if (response.isSuccess) {
-      return IncidenciaEntity.fromJson(jsonDecode(response.body));
+      IncidenciaResponse incidenciaResponse =
+          IncidenciaResponse.fromJson(jsonDecode(response.body));
+      return incidenciaResponse.toDomain();
     }
     throw UnimplementedError();
   }
@@ -23,12 +28,15 @@ class IncidenciasRepositoryImplementation implements IncidenciaRepository {
   @override
   Future<IncidenciaEntity> editarIncidencia(IncidenciaEntity incidencia) async {
     AppHttpManager appHttpManager = AppHttpManager();
+    IncidenciaRequest request = incidencia.toData();
     AppResponse response = await appHttpManager.put(
       path: '/incidencia/update',
-      body: incidencia.toJson(),
+      body: request.toJson(),
     );
     if (response.isSuccess) {
-      return IncidenciaEntity.fromJson(jsonDecode(response.body));
+      IncidenciaResponse incidenciaResponse =
+          IncidenciaResponse.fromJson(jsonDecode(response.body));
+      return incidenciaResponse.toDomain();
     }
     throw UnimplementedError();
   }
@@ -40,7 +48,9 @@ class IncidenciasRepositoryImplementation implements IncidenciaRepository {
       path: '/incidencia/delete/$id',
     );
     if (response.isSuccess) {
-      return IncidenciaEntity.fromJson(jsonDecode(response.body));
+      IncidenciaResponse incidenciaResponse =
+          IncidenciaResponse.fromJson(jsonDecode(response.body));
+      return incidenciaResponse.toDomain();
     }
     throw UnimplementedError();
   }
