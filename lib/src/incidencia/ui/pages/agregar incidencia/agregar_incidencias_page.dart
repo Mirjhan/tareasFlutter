@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tarea_flutter/src/incidencia/core/config.dart';
 import 'package:tarea_flutter/src/incidencia/ui/pages/agregar%20incidencia/agregar_incidencias_controller.dart';
+import 'package:tarea_flutter/src/incidencia/ui/pages/agregar%20incidencia/incidencias_estados_enum.dart';
+import 'package:tarea_flutter/src/utils/core/strings.dart';
 import 'package:tarea_flutter/src/utils/ui/widgets/appbar.dart';
 import 'package:tarea_flutter/src/utils/ui/widgets/input_widget.dart';
 
@@ -15,44 +17,44 @@ class AgregarIncidenciasPage extends StatelessWidget {
     return GetBuilder<AgregarIncidenciasController>(
         init: AgregarIncidenciasController(),
         builder: (controller) => Scaffold(
-              appBar: appbarWidget(
-                  titulo: controller.estaEditando
-                      ? 'Editar incidencia'
-                      : 'Nueva incidencia'),
-              body: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    children: [
-                      InputWidget(
-                        hintText: 'Nombre',
-                        prefixIconData: Icons.abc,
-                        onChanged: controller.onChangedNombre,
-                        initialValue: controller.nombre,
-                      ),
-                      InputWidget(
-                        hintText: 'Descripción',
-                        prefixIconData: Icons.abc,
-                        onChanged: controller.onChangedDescripcion,
-                        initialValue: controller.descripcion,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      dropdownMenu(size.width, controller),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      GestureDetector(
-                        onTap: controller.picker,
-                        child: mostrarImagen(controller),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+              appBar: _appBar(controller),
+              body: _body(controller, size),
               bottomNavigationBar: boton(controller),
             ));
+  }
+
+  AppBar _appBar(AgregarIncidenciasController controller) {
+    String title = controller.estaEditando
+        ? editarIncidenciaString
+        : nuevaIncidenciaString;
+
+    return appbarWidget(titulo: title);
+  }
+
+  Widget _body(AgregarIncidenciasController controller, Size size) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          children: [
+            InputWidget(
+              hintText: 'Nombre',
+              prefixIconData: Icons.abc,
+              onChanged: controller.onChangedNombre,
+              initialValue: controller.nombre,
+            ),
+            InputWidget(
+              hintText: 'Descripción',
+              prefixIconData: Icons.abc,
+              onChanged: controller.onChangedDescripcion,
+              initialValue: controller.descripcion,
+            ),
+            dropdownMenu(size.width, controller),
+            _elegirImagenWidget(controller),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget boton(AgregarIncidenciasController controller) {
@@ -75,50 +77,59 @@ class AgregarIncidenciasPage extends StatelessWidget {
   }
 
   Widget dropdownMenu(double width, AgregarIncidenciasController controller) {
-    return DropdownMenu<String>(
-      initialSelection: controller.estado,
-      dropdownMenuEntries: [
-        DropdownMenuEntry(value: 'E', label: 'En espera'),
-        DropdownMenuEntry(value: 'P', label: 'En proceso'),
-        DropdownMenuEntry(value: 'R', label: 'Resuelto'),
-      ],
-      onSelected: (value) => controller.changeDropdownMenu(value),
-      label: Text('Estado'),
-      width: width,
-      hintText: 'Elija su opción',
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(15),
+    List<DropdownMenuEntry<String>> entries = EstadosIncidenciaEnum.values
+        .map((e) => DropdownMenuEntry(value: e.valor, label: e.descripcion))
+        .toList();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: DropdownMenu<String>(
+        initialSelection: controller.estado,
+        dropdownMenuEntries: entries,
+        onSelected: (value) => controller.changeDropdownMenu(value),
+        label: Text('Estado'),
+        width: width,
+        hintText: 'Elija su opción',
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(15),
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget mostrarImagen(AgregarIncidenciasController controller) {
-    return Container(
-      height: 160,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.grey),
+  Widget _elegirImagenWidget(AgregarIncidenciasController controller) {
+    return GestureDetector(
+      onTap: controller.picker,
+      child: Container(
+        height: 160,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: Colors.grey),
+        ),
+        child: cuadroImagen(controller),
       ),
-      child: cuadroImagen(controller),
     );
   }
 
   Widget cuadroImagen(AgregarIncidenciasController controller) {
+    Image imagenDefaultOrNetwork = (controller.incidenciaSeleccionada?.imagen ==
+            null)
+        ? Image.asset(sinImagenUrl)
+        : Image.network(
+            '$urlServerPublic/incidencia/${controller.incidenciaSeleccionada?.imagen}');
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),
       child: (controller.pathSelected != null)
           ? Image.file(File(controller.pathSelected!))
-          : (controller.incidenciaSeleccionada?.imagen == null)
-              ? Image.asset('assets/images/camara.jpg')
-              : Image.network(
-                  '$urlServerPublic/incidencia/${controller.incidenciaSeleccionada?.imagen}'),
+          : imagenDefaultOrNetwork,
     );
   }
 }

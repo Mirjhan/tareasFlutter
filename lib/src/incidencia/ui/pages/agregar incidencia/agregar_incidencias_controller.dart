@@ -1,14 +1,16 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
-import 'package:tarea_flutter/src/incidencia/data/error_entity.dart';
+import 'package:tarea_flutter/src/utils/core/arguments.dart';
+import 'package:tarea_flutter/src/utils/domain/entities/error_entity.dart';
 import 'package:tarea_flutter/src/incidencia/data/repositories/incidencias_repository_implementation.dart';
-import 'package:tarea_flutter/src/incidencia/data/result_type.dart';
+import 'package:tarea_flutter/src/utils/core/result_type.dart';
 import 'package:tarea_flutter/src/incidencia/domain/entities/incidencia_entity.dart';
 import 'package:tarea_flutter/src/incidencia/domain/use_cases/crear_incidencia_con_imagen_use_case.dart';
 import 'package:tarea_flutter/src/incidencia/domain/use_cases/crear_incidencia_use_case.dart';
 import 'package:tarea_flutter/src/incidencia/domain/use_cases/editar_incidencia_con_imagen_use_case.dart';
 import 'package:tarea_flutter/src/incidencia/domain/use_cases/editar_incidencia_use_case.dart';
 import 'package:tarea_flutter/src/utils/ui/services/loading/loading_service.dart';
+import 'package:tarea_flutter/src/utils/ui/widgets/snackbar/snackbar.dart';
 
 class AgregarIncidenciasController extends GetxController {
   CrearIncidenciaUseCase crearIncidenciaUseCase =
@@ -30,9 +32,9 @@ class AgregarIncidenciasController extends GetxController {
   @override
   void onInit() {
     if (Get.arguments != null) {
-      if (Get.arguments['seleccionada'] != null) {
+      if (Get.arguments[seleccionadaArgument] != null) {
         incidenciaSeleccionada =
-            (Get.arguments['seleccionada'] as IncidenciaEntity);
+            (Get.arguments[seleccionadaArgument] as IncidenciaEntity);
 
         nombre = incidenciaSeleccionada?.nombre ?? '';
         descripcion = incidenciaSeleccionada?.descripcion ?? '';
@@ -117,11 +119,11 @@ class AgregarIncidenciasController extends GetxController {
   Future<void> crearIncidenciaConImagen() async {
     String? mensaje = validar();
     if (mensaje != null) {
-      Get.snackbar(mensaje, 'Error');
+      showSnackbarError(message: mensaje);
       return;
     }
     if (pathSelected == null) {
-      Get.snackbar('Error', 'Seleccione una imagen');
+      showSnackbarError(message: 'Seleccione una imagen');
       return;
     }
 
@@ -145,11 +147,11 @@ class AgregarIncidenciasController extends GetxController {
   Future<void> editarIncidenciaConImagen() async {
     String? mensaje = validar();
     if (mensaje != null) {
-      Get.snackbar(mensaje, 'ERror');
+      showSnackbarError(message: mensaje);
       return;
     }
     if (incidenciaSeleccionada?.imagen == null) {
-      Get.snackbar('Error', 'Seleccione una imagen');
+      showSnackbarError(message: 'Seleccione una imagen');
       return;
     }
     showLoading();
