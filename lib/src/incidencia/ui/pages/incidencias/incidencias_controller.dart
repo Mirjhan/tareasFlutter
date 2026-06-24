@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
+import 'package:tarea_flutter/src/incidencia/data/error_entity.dart';
 import 'package:tarea_flutter/src/incidencia/data/repositories/incidencias_repository_implementation.dart';
+import 'package:tarea_flutter/src/incidencia/data/result_type.dart';
 import 'package:tarea_flutter/src/incidencia/domain/entities/incidencia_entity.dart';
 import 'package:tarea_flutter/src/incidencia/domain/use_cases/eliminar_incidencia_use_case.dart';
 import 'package:tarea_flutter/src/incidencia/domain/use_cases/listar_incidencias_use_case.dart';
@@ -41,17 +43,37 @@ class IncidenciasController extends GetxController {
 
   Future<void> getIncidencias() async {
     showLoading();
-    incidencias = await listarIncidenciasUseCase.execute();
+    Result<List<IncidenciaEntity>> resultType =
+        await listarIncidenciasUseCase.execute();
+
+    switch (resultType) {
+      case Success<List<IncidenciaEntity>>():
+        incidencias = resultType.value;
+        update();
+        break;
+      case Error<List<IncidenciaEntity>>():
+        ErrorEntity error = resultType.error;
+        Get.snackbar(error.title, error.description);
+    }
     hideLoading();
-    update();
   }
 
   Future<void> deleteIncidencia(int id) async {
     showLoading();
-    await eliminarIncidenciaUseCase.execute(id);
-    incidencias.removeWhere((e) => e.id == id);
+    Result<IncidenciaEntity> resultType =
+        await eliminarIncidenciaUseCase.execute(id);
+
+    switch (resultType) {
+      case Success<IncidenciaEntity>():
+        incidencias.removeWhere((e) => e.id == id);
+        update();
+        break;
+      case Error<IncidenciaEntity>():
+        ErrorEntity error = resultType.error;
+        Get.snackbar(error.title, error.description);
+        break;
+    }
     hideLoading();
-    update();
   }
 
   void confirmarDelete(int id) async {
