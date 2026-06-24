@@ -1,6 +1,8 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
+import 'package:tarea_flutter/src/incidencia/data/error_entity.dart';
 import 'package:tarea_flutter/src/incidencia/data/repositories/incidencias_repository_implementation.dart';
+import 'package:tarea_flutter/src/incidencia/data/result_type.dart';
 import 'package:tarea_flutter/src/incidencia/domain/entities/incidencia_entity.dart';
 import 'package:tarea_flutter/src/incidencia/domain/use_cases/crear_incidencia_con_imagen_use_case.dart';
 import 'package:tarea_flutter/src/incidencia/domain/use_cases/crear_incidencia_use_case.dart';
@@ -112,7 +114,7 @@ class AgregarIncidenciasController extends GetxController {
     }
   }
 
-  void crearIncidenciaConImagen() async {
+  Future<void> crearIncidenciaConImagen() async {
     String? mensaje = validar();
     if (mensaje != null) {
       Get.snackbar(mensaje, 'Error');
@@ -126,19 +128,27 @@ class AgregarIncidenciasController extends GetxController {
     showLoading();
     final incidencia = IncidenciaEntity(
         nombre: nombre!, descripcion: descripcion!, estado: estado!);
-    IncidenciaEntity nuevaIncidencia = await crearIncidenciaConImagenUseCase
+    Result<IncidenciaEntity> resultType = await crearIncidenciaConImagenUseCase
         .execute(incidencia, pathSelected!);
     hideLoading();
-    Get.back(result: nuevaIncidencia);
+
+    switch (resultType) {
+      case Success<IncidenciaEntity>():
+        Get.back(result: resultType.value);
+        break;
+      case Error<IncidenciaEntity>():
+        ErrorEntity error = resultType.error;
+        Get.snackbar(error.title, error.description);
+    }
   }
 
-  void editarIncidenciaConImagen() async {
+  Future<void> editarIncidenciaConImagen() async {
     String? mensaje = validar();
     if (mensaje != null) {
       Get.snackbar(mensaje, 'ERror');
       return;
     }
-    if (pathSelected == null) {
+    if (incidenciaSeleccionada?.imagen == null) {
       Get.snackbar('Error', 'Seleccione una imagen');
       return;
     }
@@ -148,12 +158,20 @@ class AgregarIncidenciasController extends GetxController {
         nombre: nombre!,
         descripcion: descripcion!,
         estado: estado!);
-    IncidenciaEntity incidenciaActualizada =
-        await editarIncidenciaConImagenUseCase.execute(
-            incidencia, pathSelected!);
-    incidenciaSeleccionada = incidenciaActualizada;
+    Result<IncidenciaEntity> resultType = await editarIncidenciaConImagenUseCase
+        .execute(incidencia, pathSelected);
+
     hideLoading();
-    Get.back(result: incidenciaSeleccionada);
-    update();
+
+    switch (resultType) {
+      case Success<IncidenciaEntity>():
+        incidenciaSeleccionada = resultType.value;
+        Get.back(result: incidenciaSeleccionada);
+        update();
+        break;
+      case Error<IncidenciaEntity>():
+        ErrorEntity error = resultType.error;
+        Get.snackbar(error.title, error.description);
+    }
   }
 }

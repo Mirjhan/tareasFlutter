@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tarea_flutter/src/home/ui/pages/content/content_page.dart';
-import 'package:tarea_flutter/src/incidencia/ui/pages/incidencias/incidencias_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
