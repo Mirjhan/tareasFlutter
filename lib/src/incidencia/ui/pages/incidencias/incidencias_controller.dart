@@ -1,7 +1,8 @@
 import 'package:get/get.dart';
-import 'package:tarea_flutter/src/incidencia/data/error_entity.dart';
+import 'package:tarea_flutter/src/utils/core/arguments.dart';
+import 'package:tarea_flutter/src/utils/domain/entities/error_entity.dart';
 import 'package:tarea_flutter/src/incidencia/data/repositories/incidencias_repository_implementation.dart';
-import 'package:tarea_flutter/src/incidencia/data/result_type.dart';
+import 'package:tarea_flutter/src/utils/core/result_type.dart';
 import 'package:tarea_flutter/src/incidencia/domain/entities/incidencia_entity.dart';
 import 'package:tarea_flutter/src/incidencia/domain/use_cases/eliminar_incidencia_use_case.dart';
 import 'package:tarea_flutter/src/incidencia/domain/use_cases/listar_incidencias_use_case.dart';
@@ -34,7 +35,7 @@ class IncidenciasController extends GetxController {
   void goToEditarIncidencia(int index) async {
     final result = await Get.to<IncidenciaEntity>(
         () => AgregarIncidenciasPage(),
-        arguments: {'seleccionada': incidencias[index]});
+        arguments: {seleccionadaArgument: incidencias[index]});
     if (result != null) {
       incidencias[index] = result;
       update();

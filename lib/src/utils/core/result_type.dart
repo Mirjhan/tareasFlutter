@@ -1,4 +1,4 @@
-import 'package:tarea_flutter/src/incidencia/data/error_entity.dart';
+import 'package:tarea_flutter/src/utils/domain/entities/error_entity.dart';
 
 sealed class Result<T> {
   const Result();

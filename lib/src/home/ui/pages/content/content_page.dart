@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tarea_flutter/src/ajustes/ui/pages/ajustes_page.dart';
 import 'package:tarea_flutter/src/home/ui/pages/content/content_controller.dart';
+import 'package:tarea_flutter/src/home/ui/pages/content/content_options_enum.dart';
 import 'package:tarea_flutter/src/incidencia/ui/pages/incidencias/incidencias_page.dart';
 
 class ContentPage extends StatelessWidget {
@@ -9,6 +11,7 @@ class ContentPage extends StatelessWidget {
     IncidenciasPage(),
     IncidenciasPage(),
     IncidenciasPage(),
+    AjustesPage(),
   ];
 
   @override
@@ -20,19 +23,22 @@ class ContentPage extends StatelessWidget {
           controller: controller.pageController,
           children: pages,
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: controller.indexPage,
-          onTap: controller.onTap,
-          items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.assignment_late_outlined),
-                label: "Incidencias"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.person), label: "Usuarios"),
-          ],
-        ),
+        bottomNavigationBar: _bottomNavigation(controller),
       ),
+    );
+  }
+
+  Widget _bottomNavigation(ContentController controller) {
+    List<BottomNavigationBarItem> items = ContentOptionsEnum.values
+        .map((e) => BottomNavigationBarItem(icon: Icon(e.icon), label: e.title))
+        .toList();
+
+    return BottomNavigationBar(
+      currentIndex: controller.indexPage,
+      fixedColor: Colors.black,
+      type: BottomNavigationBarType.fixed,
+      onTap: controller.onTap,
+      items: items,
     );
   }
 }

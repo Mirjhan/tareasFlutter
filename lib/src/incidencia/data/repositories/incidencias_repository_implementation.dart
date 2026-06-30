@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:tarea_flutter/src/incidencia/data/error_entity.dart';
+import 'package:tarea_flutter/src/utils/domain/entities/error_entity.dart';
 import 'package:tarea_flutter/src/incidencia/data/requests/incidencia_request.dart';
 import 'package:tarea_flutter/src/incidencia/data/responses/incidencia_response.dart';
-import 'package:tarea_flutter/src/incidencia/data/result_type.dart';
+import 'package:tarea_flutter/src/utils/core/result_type.dart';
 import 'package:tarea_flutter/src/incidencia/domain/entities/incidencia_entity.dart';
 import 'package:tarea_flutter/src/incidencia/domain/repositories/incidencia_repository.dart';
 import 'package:tarea_flutter/src/utils/data/http%20manager/app_http_manager.dart';
