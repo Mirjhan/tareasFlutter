@@ -1,26 +1,21 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:tarea_flutter/src/utils/core/arguments.dart';
-import 'package:tarea_flutter/src/utils/domain/entities/error_entity.dart';
 import 'package:tarea_flutter/src/incidencia/data/repositories/incidencias_repository_implementation.dart';
 import 'package:tarea_flutter/src/utils/core/result_type.dart';
 import 'package:tarea_flutter/src/incidencia/domain/entities/incidencia_entity.dart';
-import 'package:tarea_flutter/src/incidencia/domain/use_cases/crear_incidencia_con_imagen_use_case.dart';
 import 'package:tarea_flutter/src/incidencia/domain/use_cases/crear_incidencia_use_case.dart';
-import 'package:tarea_flutter/src/incidencia/domain/use_cases/editar_incidencia_con_imagen_use_case.dart';
+import 'package:tarea_flutter/src/incidencia/domain/use_cases/editar_imagen_use_case.dart';
 import 'package:tarea_flutter/src/incidencia/domain/use_cases/editar_incidencia_use_case.dart';
 import 'package:tarea_flutter/src/utils/ui/services/loading/loading_service.dart';
-import 'package:tarea_flutter/src/utils/ui/widgets/snackbar/snackbar.dart';
 
 class AgregarIncidenciasController extends GetxController {
   CrearIncidenciaUseCase crearIncidenciaUseCase =
       CrearIncidenciaUseCase(IncidenciasRepositoryImplementation());
   EditarIncidenciaUseCase editarIncidenciaUseCase =
       EditarIncidenciaUseCase(IncidenciasRepositoryImplementation());
-  CrearIncidenciaConImagenUseCase crearIncidenciaConImagenUseCase =
-      CrearIncidenciaConImagenUseCase(IncidenciasRepositoryImplementation());
-  EditarIncidenciaConImagenUseCase editarIncidenciaConImagenUseCase =
-      EditarIncidenciaConImagenUseCase(IncidenciasRepositoryImplementation());
+  EditarImagenUseCase editarImagenUseCase =
+      EditarImagenUseCase(IncidenciasRepositoryImplementation());
 
   IncidenciaEntity? incidenciaSeleccionada;
   String? nombre;
@@ -78,10 +73,23 @@ class AgregarIncidenciasController extends GetxController {
       return;
     } else {
       showLoading();
-      final incidencia = IncidenciaEntity(
+      IncidenciaEntity incidencia = IncidenciaEntity(
           nombre: nombre!, descripcion: descripcion!, estado: estado!);
-      await crearIncidenciaUseCase.execute(incidencia);
+      final result = await crearIncidenciaUseCase.execute(incidencia);
+
+      switch (result) {
+        case Success<IncidenciaEntity>():
+          incidencia = result.value;
+
+          incidencia.imagen = await updateImagen(incidencia.id!);
+
+          break;
+        case Error():
+          break;
+      }
+
       hideLoading();
+
       Get.back(result: incidencia);
     }
   }
@@ -93,16 +101,41 @@ class AgregarIncidenciasController extends GetxController {
       return;
     } else {
       showLoading();
-      final incidencia = IncidenciaEntity(
-        id: incidenciaSeleccionada?.id,
-        nombre: nombre!,
-        descripcion: descripcion!,
-        estado: estado!,
-      );
-      await editarIncidenciaUseCase.execute(incidencia);
+      IncidenciaEntity incidencia = IncidenciaEntity(
+          id: incidenciaSeleccionada?.id,
+          nombre: nombre!,
+          descripcion: descripcion!,
+          estado: estado!);
+      final result = await editarIncidenciaUseCase.execute(incidencia);
+      switch (result) {
+        case Success<IncidenciaEntity>():
+          incidencia = result.value;
+          final imagenActualizada = await updateImagen(incidencia.id!);
+          if (imagenActualizada != null) {
+            incidencia.imagen = imagenActualizada;
+          }
+          break;
+        case Error():
+          break;
+      }
       hideLoading();
       Get.back(result: incidencia);
     }
+  }
+
+  Future<String?> updateImagen(int id) async {
+    if (pathSelected != null) {
+      final resultImagen = await editarImagenUseCase.execute(id, pathSelected!);
+      // executar el caso de uso de updateImagen
+      switch (resultImagen) {
+        case Success():
+          return resultImagen.value.imagen;
+
+        case Error():
+          break;
+      }
+    }
+    return null;
   }
 
   void picker() async {
@@ -116,64 +149,7 @@ class AgregarIncidenciasController extends GetxController {
     }
   }
 
-  Future<void> crearIncidenciaConImagen() async {
-    String? mensaje = validar();
-    if (mensaje != null) {
-      showSnackbarError(message: mensaje);
-      return;
-    }
-    if (pathSelected == null) {
-      showSnackbarError(message: 'Seleccione una imagen');
-      return;
-    }
-
-    showLoading();
-    final incidencia = IncidenciaEntity(
-        nombre: nombre!, descripcion: descripcion!, estado: estado!);
-    Result<IncidenciaEntity> resultType = await crearIncidenciaConImagenUseCase
-        .execute(incidencia, pathSelected!);
-    hideLoading();
-
-    switch (resultType) {
-      case Success<IncidenciaEntity>():
-        Get.back(result: resultType.value);
-        break;
-      case Error<IncidenciaEntity>():
-        ErrorEntity error = resultType.error;
-        Get.snackbar(error.title, error.description);
-    }
-  }
-
-  Future<void> editarIncidenciaConImagen() async {
-    String? mensaje = validar();
-    if (mensaje != null) {
-      showSnackbarError(message: mensaje);
-      return;
-    }
-    if (incidenciaSeleccionada?.imagen == null) {
-      showSnackbarError(message: 'Seleccione una imagen');
-      return;
-    }
-    showLoading();
-    final incidencia = IncidenciaEntity(
-        id: incidenciaSeleccionada?.id,
-        nombre: nombre!,
-        descripcion: descripcion!,
-        estado: estado!);
-    Result<IncidenciaEntity> resultType = await editarIncidenciaConImagenUseCase
-        .execute(incidencia, pathSelected);
-
-    hideLoading();
-
-    switch (resultType) {
-      case Success<IncidenciaEntity>():
-        incidenciaSeleccionada = resultType.value;
-        Get.back(result: incidenciaSeleccionada);
-        update();
-        break;
-      case Error<IncidenciaEntity>():
-        ErrorEntity error = resultType.error;
-        Get.snackbar(error.title, error.description);
-    }
-  }
+  // EDITAR
+  // EN EL PRIMER CASO DE USO ENVIAS EL CUERPO
+  // ENVIAS LA IMAGEN
 }

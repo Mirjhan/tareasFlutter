@@ -2,15 +2,14 @@ import 'package:tarea_flutter/src/utils/core/result_type.dart';
 import 'package:tarea_flutter/src/incidencia/domain/entities/incidencia_entity.dart';
 import 'package:tarea_flutter/src/incidencia/domain/repositories/incidencia_repository.dart';
 
-class EditarIncidenciaConImagenUseCase {
+class EditarImagenUseCase {
   IncidenciaRepository repository;
 
-  EditarIncidenciaConImagenUseCase(
+  EditarImagenUseCase(
     this.repository,
   );
 
-  Future<Result<IncidenciaEntity>> execute(
-      IncidenciaEntity incidencia, String? pathFile) {
-    return repository.editarIncidenciaConImagen(incidencia, pathFile);
+  Future<Result<IncidenciaEntity>> execute(int id, String pathFile) {
+    return repository.editarImagen(id, pathFile);
   }
 }

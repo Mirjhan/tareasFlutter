@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:tarea_flutter/src/incidencia/data/requests/incidencia_request.dart';
-
 class IncidenciaEntity {
   int? id;
   String nombre;
@@ -45,12 +43,6 @@ class IncidenciaEntity {
         "descripcion": descripcion,
         "estado": estado,
       };
-
-  IncidenciaRequest toData() => IncidenciaRequest(
-        nombre: nombre,
-        descripcion: descripcion,
-        estado: estado,
-      );
 }
 
 List<IncidenciaEntity> incidenciaEntityFromJson(String str) =>

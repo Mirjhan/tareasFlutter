@@ -1,5 +1,3 @@
-import 'package:tarea_flutter/src/incidencia/domain/entities/incidencia_entity.dart';
-
 class IncidenciaResponse {
   int? id;
   String nombre;
@@ -30,7 +28,4 @@ class IncidenciaResponse {
         "descripcion": descripcion,
         "estado": estado,
       };
-
-  IncidenciaEntity toDomain() => IncidenciaEntity(
-      nombre: nombre, descripcion: descripcion, estado: estado);
 }
