@@ -4,13 +4,14 @@ import 'package:tarea_flutter/src/ajustes/ui/pages/ajustes_page.dart';
 import 'package:tarea_flutter/src/home/ui/pages/content/content_controller.dart';
 import 'package:tarea_flutter/src/home/ui/pages/content/content_options_enum.dart';
 import 'package:tarea_flutter/src/incidencia/ui/pages/incidencias/incidencias_page.dart';
+import 'package:tarea_flutter/src/usuario/ui/pages/usuarios/usuarios_page.dart';
 
 class ContentPage extends StatelessWidget {
   ContentPage({super.key});
   final List<Widget> pages = [
     IncidenciasPage(),
     IncidenciasPage(),
-    IncidenciasPage(),
+    UsuariosPage(),
     AjustesPage(),
   ];
 

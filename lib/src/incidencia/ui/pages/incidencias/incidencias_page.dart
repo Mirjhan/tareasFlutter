@@ -13,7 +13,7 @@ class IncidenciasPage extends StatelessWidget {
         init: IncidenciasController(),
         builder: (controller) => SafeArea(
               child: Scaffold(
-                appBar: appbarWidget(titulo: 'Lista de incidencias'),
+                appBar: appbarWidget(titulo: 'Incidencias'),
                 body: RefreshIndicator(
                   onRefresh: controller.getIncidencias,
                   child: ListView.builder(
@@ -47,7 +47,7 @@ class IncidenciasPage extends StatelessWidget {
       onTap: () => controller.goToEditarIncidencia(index),
       child: Card(
         elevation: 5,
-        shadowColor: Colors.amber,
+        shadowColor: Colors.grey,
         color: Colors.lightBlue,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: EdgeInsets.only(bottom: 10),

@@ -60,8 +60,8 @@ class AgregarIncidenciasPage extends StatelessWidget {
   Widget boton(AgregarIncidenciasController controller) {
     return GestureDetector(
       onTap: controller.estaEditando
-          ? controller.editarIncidenciaConImagen
-          : controller.crearIncidenciaConImagen,
+          ? controller.editarIncidencia
+          : controller.crearIncidencia,
       child: Container(
         margin: EdgeInsets.all(5),
         padding: EdgeInsets.all(15),
